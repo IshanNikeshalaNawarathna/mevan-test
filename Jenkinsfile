@@ -9,7 +9,7 @@ stages {
         stage('Build jar') {
             steps {
               echo "build the application"
-              sh 'maven package'
+              sh 'mvn package'
             }
         }
 
