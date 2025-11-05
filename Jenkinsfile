@@ -20,9 +20,9 @@ stages {
              script{
                   echo "build image"
              withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
-                sh 'docker build -t ishannikeshala99/demo-app:jma-2.0 .'
+                sh 'docker build -t ishannikeshala99/demo-app:jma-2.1 .'
                 sh 'echo $PASS | docker login -u $USER --password-stdin'
-                sh 'docker push ishannikeshala99/demo-app:jma-2.0'
+                sh 'docker push ishannikeshala99/demo-app:jma-2.1'
               }
             }
             }
