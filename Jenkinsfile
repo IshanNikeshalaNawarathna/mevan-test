@@ -8,25 +8,31 @@ tools {
 stages {
         stage('Build jar') {
             steps {
-              echo "build the application"
-              sh 'mvn package'
+                script{
+                     echo "build the application"
+                     sh 'mvn package'
+                }
             }
         }
 
         stage('Build Image') {
             steps {
-              echo "test the application"
+             script{
+                  echo "build image"
              withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
                 sh 'docker build -t ishannikeshala99/demo-app:jma-2.0 .'
                 sh 'echo $PASS | docker login -u $USER --password-stdin'
                 sh 'docker push ishannikeshala99/demo-app:jma-2.0'
               }
             }
+            }
         }
 
         stage('Deploy') {
             steps {
-               echo "deploy the application"
+               script{
+                echo "deploy the application"
+               }
             }
         }
     }
