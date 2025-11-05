@@ -1,16 +1,26 @@
 pipeline {
     agent any   // Runs on any available agent
 
-    stages {
-        stage('Build') {
+tools{
+    maven "maven-3.9.11"
+}
+
+stages {
+        stage('Build jar') {
             steps {
               echo "build the application"
+              sh 'maven package'
             }
         }
 
-        stage('Test') {
+        stage('Build Image') {
             steps {
               echo "test the application"
+              withCredentials([usernamePassword(credentialId:"docker-hub",usernameVariable:"USER",passwordVariable:"PASS")]){
+                sh 'docker build -t ishannikeshala99/demo-app:jma-2.0 .'
+                sh 'echo $PASS | docker login -u $USER --password-stdin'
+                sh 'docker push ishannikeshala99/demo-app:jma-2.0'
+              }
             }
         }
 
@@ -22,4 +32,3 @@ pipeline {
     }
 
 }
-
