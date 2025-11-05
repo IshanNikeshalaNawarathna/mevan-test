@@ -1,8 +1,8 @@
 pipeline {
     agent any   // Runs on any available agent
 
-tools{
-    maven "maven-3.9.11"
+tools {
+    maven "Maven"
 }
 
 stages {
