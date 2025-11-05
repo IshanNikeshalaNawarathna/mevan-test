@@ -1,3 +1,5 @@
+def gv
+
 pipeline {
     agent any   // Runs on any available agent
 
@@ -6,11 +8,19 @@ tools {
 }
 
 stages {
+
+       stage('init') {
+            steps {
+                script{
+                    gv = load "script.groovy"
+                }
+            }
+        }
+
         stage('Build jar') {
             steps {
                 script{
-                     echo "build the application"
-                     sh 'mvn package'
+                   gv.buildJar()
                 }
             }
         }
@@ -18,12 +28,7 @@ stages {
         stage('Build Image') {
             steps {
              script{
-                  echo "build image"
-             withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
-                sh 'docker build -t ishannikeshala99/demo-app:jma-2.1 .'
-                sh 'echo $PASS | docker login -u $USER --password-stdin'
-                sh 'docker push ishannikeshala99/demo-app:jma-2.1'
-              }
+gv.buildImage()
             }
             }
         }
@@ -31,7 +36,7 @@ stages {
         stage('Deploy') {
             steps {
                script{
-                echo "deploy the application"
+               gv.deploy()
                }
             }
         }
