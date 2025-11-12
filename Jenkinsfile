@@ -59,8 +59,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'gitub-access', usernameVariable: "USER", passwordVariable: "PASS")]) {
                         sh "git add ."
                         sh "git commit -m 'ci: jenkins version modified'" 
-                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/IshanNikeshalaNawarathna/mevan-test.git"
-                        sh "git push origin HEAD:main"
+                        sh "git push https://${USER}:${PASS}@github.com/IshanNikeshalaNawarathna/mevan-test.git HEAD:jenkins-branch"
                     }
                 }
             }
