@@ -55,15 +55,12 @@ pipeline {
         stage('commit version update') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-pat', passwordVariable: 'PASS')]) {
-                        // git config here for the first time run
-                        sh 'git config --global user.email "ishannikeshala1999@gmail.com"'
-                        sh 'git config --global user.name "Ishan Nikeshala"'
-
-                        sh "git remote set-url origin https://IshanNikeshalaNawarathna:${PASS}@github.com/IshanNikeshalaNawarathna/mevan-test.git"
-                        sh 'git add .'
-                        sh 'git commit -m "ci: version bump"'
-                        sh 'git push origin HEAD:jenkins-jobs'
+                    echo "commit version update..."
+                    withCredentials([usernamePassword(credentialsId: 'gitub-access', usernameVariable: "USER", passwordVariable: "PASS")]) {
+                        sh "git add ."
+                        sh "git commit -m 'ci: jenkins version modified'" 
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/IshanNikeshalaNawarathna/mevan-test.git"
+                        sh "git push origin HEAD:main"
                     }
                 }
             }
