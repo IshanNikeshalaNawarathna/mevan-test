@@ -1,33 +1,56 @@
 pipeline {
-    agent any   // Runs on any available agent
+    agent any
+
+    tools {
+        maven "maven-3.9"
+    }
 
     stages {
-        stage('Test') {
+        stage('Increment Version') {
             steps {
-              echo "test the application"
-              echo "Executing pipeline on branch: $BRANCH_NAME"
-            }
-        }
-        stage('Build') {
-            when{
-                expression {
-                    BRANCH_NAME == 'main' 
+                script {
+                    echo 'incrementing app version...'
+                    sh 'mvn build-helper:parse-version versions:set \
+                        -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
+                        versions:commit'
+                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                    def version = matcher[0][1]
+                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+
                 }
             }
+        }
+
+        stage('Build Jar') {
             steps {
-              echo "build the application"
+                script{
+                    echo "Build the application."
+                    sh 'mvn clean package'
+                }
+
             }
         }
+
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    echo "Building Docker image..."
+                    withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
+                        sh 'echo $PASS | docker login -u $USER --password-stdin'
+                        sh "docker build -t ishannikeshala99/demo-app:${IMAGE_NAME} ."
+                        sh "docker push ishannikeshala99/demo-app:${IMAGE_NAME}"
+                    }
+                }
+            }
+        }
+
         stage('Deploy') {
-            when{
-                expression {
-                    BRANCH_NAME == 'main' 
-                }
-            }
             steps {
-               echo "deploy the application"
+                script{
+                    echo "Deploying application............................"
+                }
+              
             }
         }
     }
-
 }
