@@ -55,7 +55,7 @@ pipeline {
         stage('commit version update') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'gitub-access', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    withCredentials([usernamePassword(credentialsId: 'gitub-access', passwordVariable: 'PASS')]) {
                         // git config here for the first time run
                         sh 'git config --global user.email "ishannikeshala1999@gmail.com"'
                         sh 'git config --global user.name "Ishan Nikeshala"'
