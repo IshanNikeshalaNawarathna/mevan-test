@@ -56,10 +56,13 @@ pipeline {
             steps {
                 script {
                     echo "commit version update..."
-                    withCredentials([usernamePassword(credentialsId: 'gitub-access', usernameVariable: "USER", passwordVariable: "PASS")]) {
-                        sh "git add ."
-                        sh "git commit -m 'ci: jenkins version modified'" 
-                        sh "git push https://${USER}:${PASS}@github.com/IshanNikeshalaNawarathna/mevan-test.git HEAD:jenkins-branch"
+                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: "USER", passwordVariable: "PASS")]) {
+                        sh 'git config user.email "ishannikeshala1999@gmail.com"'
+                        sh 'git config user.name "Ishan Nikeshala"'
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/IshanNikeshalaNawarathna/mevan-test.git"
+                        sh 'git add .'
+                        sh 'git commit -m "ci: jenkins version modified"' 
+                        sh 'git push origin HEAD:jenkins-branch'
                     }
                 }
             }
