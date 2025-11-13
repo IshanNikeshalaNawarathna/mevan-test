@@ -47,9 +47,24 @@ pipeline {
         stage('Deploy') {
             steps {
                 script{
-                    echo "Deploying application............................"
+                    echo "Deploying application."
                 }
               
+            }
+        }
+        stage('commit version update') {
+            steps {
+                script {
+                    echo "commit version update..."
+                    withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: "USER", passwordVariable: "PASS")]) {
+                        sh 'git config user.email "ishannikeshala1999@gmail.com"'
+                        sh 'git config user.name "Ishan Nikeshala"'
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/IshanNikeshalaNawarathna/mevan-test.git"
+                        sh 'git add .'
+                        sh 'git commit -m "ci: jenkins version modified"' 
+                        sh 'git push origin HEAD:jenkins-branch'
+                    }
+                }
             }
         }
     }
