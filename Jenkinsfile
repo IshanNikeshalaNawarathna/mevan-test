@@ -9,7 +9,7 @@ pipeline {
         stage('Increment Version') {
             steps {
                 script {
-                    echo 'incrementing app version...'
+                    echo 'incrementing app version.'
                     sh 'mvn build-helper:parse-version versions:set \
                         -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
                         versions:commit'
@@ -34,7 +34,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    echo "Building Docker image..."
+                    echo "Building Docker image."
                     withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
                         sh 'echo $PASS | docker login -u $USER --password-stdin'
                         sh "docker build -t ishannikeshala99/demo-app:${IMAGE_NAME} ."
@@ -55,7 +55,7 @@ pipeline {
         stage('commit version update') {
             steps {
                 script {
-                    echo "commit version update..."
+                    echo "commit version update."
                     withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: "USER", passwordVariable: "PASS")]) {
                         sh 'git config user.email "ishannikeshala1999@gmail.com"'
                         sh 'git config user.name "Ishan Nikeshala"'
